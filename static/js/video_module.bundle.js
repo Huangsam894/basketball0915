@@ -50685,7 +50685,8 @@ var VideoModule = /*#__PURE__*/function (_Component) {
             switch (_context10.prev = _context10.next) {
               case 0:
                 this.getGameAllData(e.label);
-                videoUrl = 'http://127.0.0.1:5000/static/videos/' + e.label;
+                videoUrl = 'http://127.0.0.1:5000/static/videos/' + e.label; // const videoUrl = 'https://drive.google.com/uc?export=preview&id=' + {{xxx}}
+
                 console.log(videoUrl);
                 this.setState({
                   videoUrl: videoUrl

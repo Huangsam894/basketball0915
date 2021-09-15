@@ -239,6 +239,7 @@ class VideoModule extends Component {
         this.getGameAllData(e.label)
 
         const videoUrl = 'http://127.0.0.1:5000/static/videos/' + e.label
+        // const videoUrl = 'https://drive.google.com/uc?export=preview&id=' + {{xxx}}
         console.log(videoUrl)
         this.setState({videoUrl:videoUrl})
 
