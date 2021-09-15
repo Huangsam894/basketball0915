@@ -9,3 +9,4 @@ Werkzeug
 jsonify
 numpy
 pandas
+openpyxl

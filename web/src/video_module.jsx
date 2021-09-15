@@ -18,13 +18,19 @@ class VideoModule extends Component {
             selectSchoolOptions: [],
             selectStausOptions: [],
             selectGroupOptions: [],
+            selectEventOptions: [],
             selectOptions: [],
             gameAllData:[],
+            videoUrl: "",
             selected: "",
+            Eventselected: "",
+            Playerselected: "",
             value: ""
         };
         //
         this.selectedHandleChange = this.selectedHandleChange.bind(this);
+        this.EventhandleChange = this.EventhandleChange.bind(this);
+        this.PlayerhandleChange = this.PlayerhandleChange.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -35,37 +41,69 @@ class VideoModule extends Component {
         this.getSelectGamenameOptions();
         this.getSelectSchoolOptions();
         this.getSelectStausOptions();
+        this.getSelectPlayernameOptions();
         this.getSelectGroupOptions();
+        this.getSelectEventOptions();
         this.getSelectOptions();
     }
 
     // Get Select Year Options
     async getSelectYearOptions() {
-        const options = [
-            { value: '0', label: '2019' },
-            { value: '1', label: '2020' },
-            { value: '2', label: '2021' }
-        ]
+        // const options = [
+        //     { value: '0', label: '2019' },
+        //     { value: '1', label: '2020' },
+        //     { value: '2', label: '2021' }
+        // ]
+
+        const dataApiUrl = ("/list");
+        const res = await axios.get(dataApiUrl);
+        const data = res.data;
+
+        const options = data.Year.map((dd, index) => ({
+            value: index,
+            label: dd.Year,
+        }))
+        
         this.setState({ selectYearOptions: options });
     }
 
     // Get Select Gamename Options
     async getSelectGamenameOptions() {
-        const options = [
-            { value: '0', label: 'UBA' },
-            { value: '1', label: '友誼賽' },
-            { value: '2', label: '實習盃' }
-        ]
+        // const options = [
+        //     { value: '0', label: 'UBA預賽' },
+        //     { value: '1', label: '友誼賽' },
+        //     { value: '2', label: '實習盃' }
+        // ]
+
+        const dataApiUrl = ("/list");
+        const res = await axios.get(dataApiUrl);
+        const data = res.data;
+
+        const options = data.Game.map((dd, index) => ({
+            value: index,
+            label: dd.Game,
+        }))
+
         this.setState({ selectGamenameOptions: options });
     }
 
     // Get Select School Options
     async getSelectSchoolOptions() {
-        const options = [
-            { value: '0', label: '台灣體大' },
-            { value: '1', label: '世新大學' },
-            { value: '2', label: '政治大學' }
-        ]
+        // const options = [
+        //     { value: '0', label: '台灣體大' },
+        //     { value: '1', label: '世新大學' },
+        //     { value: '2', label: '政治大學' }
+        // ]
+
+        const dataApiUrl = ("/list");
+        const res = await axios.get(dataApiUrl);
+        const data = res.data;
+
+        const options = data.Team.map((dd, index) => ({
+            value: index,
+            label: dd.Team,
+        }))
+
         this.setState({ selectSchoolOptions: options });
     }
 
@@ -76,6 +114,21 @@ class VideoModule extends Component {
             { value: '1', label: '防守' }
         ]
         this.setState({ selectStausOptions: options });
+    }
+
+    // Get Select Playername Options
+    async getSelectPlayernameOptions() {
+
+        const dataApiUrl = ("/list");
+        const res = await axios.get(dataApiUrl);
+        const data = res.data;
+
+        const options = data.Name.map((dd, index) => ({
+            value: index,
+            label: dd.Name,
+        }))
+
+        this.setState({ selectPlayernameOptions: options });
     }
 
     // Get Select Group Options
@@ -130,7 +183,25 @@ class VideoModule extends Component {
                 ]
             }
             ]
-            this.setState({ selectGroupOptions: options });
+
+        this.setState({ selectGroupOptions: options });
+    }
+
+
+    // Get Select Event Options
+    async getSelectEventOptions() {
+
+
+        const dataApiUrl = ("/list");
+        const res = await axios.get(dataApiUrl);
+        const data = res.data;
+
+        const options = data.Event.map((dd, index) => ({
+            value: index,
+            label: dd.Event,
+        }))
+
+        this.setState({ selectEventOptions: options });
     }
 
     // Get Data
@@ -143,10 +214,20 @@ class VideoModule extends Component {
 
     // Get Select Options
     async getSelectOptions() {
-        const options = [
-            { value: '0', label: 'Guest' },
-            { value: '1', label: 'Home' }
-        ]
+
+        const dataApiUrl = ("/file");
+        const res = await axios.get(dataApiUrl);
+        const data = res.data;
+
+        const options = data.map((d, index) => ({
+            value: index,
+            label: d,
+        }));
+
+        // const options = [
+        //     { value: '0', label: 'Guest' },
+        //     { value: '1', label: 'Home' }
+        // ]
         this.setState({ selectOptions: options });
 
 
@@ -157,13 +238,52 @@ class VideoModule extends Component {
 
         this.getGameAllData(e.label)
 
-        if (e.label == 'Guest'){
-            const selected = "此選項編號: " + e.value + " 您選擇的是: 客隊"
-            this.setState({ selected: selected });
-        }else{
-            const selected = "此選項編號: " + e.value + " 您選擇的是: 主隊"
-            this.setState({ selected: selected });
-        }
+        const videoUrl = 'http://127.0.0.1:5000/static/videos/' + e.label
+        console.log(videoUrl)
+        this.setState({videoUrl:videoUrl})
+
+        document.getElementById("video").load();
+        // document.getElementById("video").play();
+
+        // if (e.label == 'Guest'){
+        //     const selected = "此選項編號: " + e.value + " 您選擇的是: 客隊"
+        //     this.setState({ selected: selected });
+        // }else{
+        //     const selected = "此選項編號: " + e.value + " 您選擇的是: 主隊"
+        //     this.setState({ selected: selected });
+        // }
+    }
+
+
+    async PlayerhandleChange(e){
+
+        console.log('handleChange:',e);
+        console.log('input:', e.label);
+
+        this.setState({Playerselected: e.label});
+
+    }
+
+
+    async EventhandleChange(e){
+
+        console.log('handleChange:',e);
+        console.log('input:', e.label);
+
+        this.setState({Eventselected: e.label});
+        const dataApiUrl = ("/find-videos");
+        const res = await axios.post(dataApiUrl, { 'label': e.label,  'label1': this.state.Playerselected});
+        const data = res.data;
+        console.log(data);
+
+        const options = data.map((d, index) => ({
+            value: index,
+            label: d.FullCorrectFileName,
+        }));
+
+        this.setState({ selectOptions: options });
+        // this.setState({value: Number(e.target.value)+1});
+
     }
 
     async handleChange(e){
@@ -197,9 +317,12 @@ class VideoModule extends Component {
             selectGamenameOptions,
             selectSchoolOptions,
             selectStausOptions,
+            selectPlayernameOptions,
             selectGroupOptions,
+            selectEventOptions,
             selectOptions,
             selected,
+            videoUrl,
             gameAllData
         } = this.state;
 
@@ -210,39 +333,54 @@ class VideoModule extends Component {
 
                         <div className="col-4">
                             <h2>搜尋條件</h2>
-                                <Select
+                                <Select className="mb-2"
                                     placeholder="選擇年份"
                                     options={selectYearOptions}
                                 //    onChange={this.selectedHandleChange}
                                 />
-                                <Select
+                                <Select className="mb-2"
                                     placeholder="選擇盃賽"
                                     options={selectGamenameOptions}
                                 //    onChange={this.selectedHandleChange}
                                 />
-                                <Select
+                                <Select className="mb-2"
                                     placeholder="選擇學校"
                                     options={selectSchoolOptions}
                                 //    onChange={this.selectedHandleChange}
                                 />
-                                <Select
+                                {/* <Select
                                     placeholder="進攻/防守"
                                     options={selectStausOptions}
                                 //    onChange={this.selectedHandleChange}
+                                /> */}
+                                <Select className="mb-2"
+                                    placeholder="選擇球員"
+                                    options={selectPlayernameOptions}
+                                   onChange={this.PlayerhandleChange}
                                 />
-                                <Select
+                                {/* <Select
                                     placeholder="選擇戰術"
                                     options={selectGroupOptions}
                                 //    onChange={this.selectedHandleChange}
+                                /> */}
+                                <Select className="mb-2"
+                                    placeholder="選擇事件"
+                                    options={selectEventOptions}
+                                   onChange={this.EventhandleChange}
                                 />
-                                <div className="2buttons">
+                                <Select className="mb-2"
+                                    placeholder="選擇"
+                                    options={selectOptions}
+                                    onChange={this.selectedHandleChange}
+                                />
+                                {/* <div className="2buttons">
                                     <Button variant="secondary" size="lg" className="button mb-2">
                                         Clear
                                     </Button>{' '}
                                     <Button variant="primary" size="lg" className="button mb-2">
                                         Apply
                                     </Button>
-                                </div>
+                                </div> */}
 
                             {/* <Clock ></Clock> */}
                                 {/* <Select
@@ -250,9 +388,9 @@ class VideoModule extends Component {
                                     placeholder="選擇"
                                     options={selectOptions}
                                     onChange={this.selectedHandleChange}
-                                />
+                                /> */}
 
-                                <p className="text-center mb-2">{selected}</p>
+                                {/* <p className="text-center mb-2">{selected}</p>
                                 
                                 <form className="form-group" onSubmit={this.handleSubmit}>
                                     <input type="text" className="form-control mb-2" defaultValue={this.state.value} onChange={this.handleChange} />
@@ -263,14 +401,18 @@ class VideoModule extends Component {
 
                         <div className="col">
                             <div>
-                                <ReactPlayer
+                                <video id="video" width="100%" controls={true}>
+                                    <source src={videoUrl} type="video/mp4" />
+                                </video>
+                                {/* <ReactPlayer
                                     url='https://www.youtube.com/watch?v=yUm6VbWetMA'
                                     controls={true}
                                     width='100%'
-                                />
+                                /> */}
                             </div>
+                            {/* <h3 className="text-center">2020UBA冠軍戰::單場精華:政治大學 - 世新大學</h3>
                             <div>
-                                <h3>搜尋結果</h3>
+                                <h4>搜尋結果</h4>
                             </div>
                             <div className="Searchresult">
                                 <Videocard></Videocard>
@@ -280,7 +422,9 @@ class VideoModule extends Component {
                                 <Videocard></Videocard>
                                 <Videocard></Videocard>
                                 <Videocard></Videocard>
-                            </div>
+                                <Videocard></Videocard>
+                                <Videocard></Videocard>
+                            </div> */}
                             {/* <table className="table table-striped">
                                 <thead className="text-center">
                                     <tr>

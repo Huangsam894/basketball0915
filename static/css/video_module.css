@@ -1,0 +1,8 @@
+p {
+  color: #00faa7;
+}
+
+.Searchresult {
+  display: flex;
+  flex-wrap: wrap;
+}
